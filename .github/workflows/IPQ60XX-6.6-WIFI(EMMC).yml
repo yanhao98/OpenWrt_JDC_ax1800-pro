@@ -1,9 +1,10 @@
 name: IPQ60XX-6.6-WIFI(EMMC)
 
 on:
+  push:
   workflow_dispatch:
-  schedule:
-    - cron: 0 19 * * *
+  # schedule:
+  #   - cron: 0 19 * * *
 
 env:
   REPO_URL: https://github.com/breeze303/ipq60xx-6.6.git
@@ -71,9 +72,11 @@ jobs:
 
     - name: Generate Variables
       run: |
+        set -x
         cp $CONFIG_FILE $OPENWRT_PATH/.config
         cd $OPENWRT_PATH
-        make defconfig > /dev/null 2>&1
+        # make defconfig > /dev/null 2>&1
+        make defconfig
         SOURCE_REPO="$(echo $REPO_URL | awk -F '/' '{print $(NF)}')"
         echo "SOURCE_REPO=$SOURCE_REPO" >> $GITHUB_ENV
         DEVICE_TARGET=$(cat .config | grep CONFIG_TARGET_BOARD | awk -F '"' '{print $2}')
